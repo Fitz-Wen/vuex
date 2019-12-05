@@ -10,6 +10,7 @@ export class Store {
     // Auto install if it is not done yet and `window` has `Vue`.
     // To allow users to avoid auto-installation in some cases,
     // this code should be placed here. See #731
+    // 自动安装Vue
     if (!Vue && typeof window !== 'undefined' && window.Vue) {
       install(window.Vue)
     }
@@ -25,7 +26,7 @@ export class Store {
       strict = false
     } = options
 
-    // store internal state
+    // store 内部状态
     this._committing = false
     this._actions = Object.create(null)
     this._actionSubscribers = []
@@ -37,7 +38,7 @@ export class Store {
     this._watcherVM = new Vue()
     this._makeLocalGettersCache = Object.create(null)
 
-    // bind commit and dispatch to self
+    // 绑定 commit and dispatch this
     const store = this
     const { dispatch, commit } = this
     this.dispatch = function boundDispatch (type, payload) {
@@ -281,7 +282,7 @@ function resetStoreVM (store, state, hot) {
   })
   Vue.config.silent = silent
 
-  // enable strict mode for new vm
+  // 确保只能通过 commit 的方式改变状态
   if (store.strict) {
     enableStrictMode(store)
   }
@@ -299,10 +300,10 @@ function resetStoreVM (store, state, hot) {
 }
 
 function installModule (store, rootState, path, module, hot) {
-  const isRoot = !path.length
+  const isRoot = !path.length // 是否根模块
   const namespace = store._modules.getNamespace(path)
 
-  // register in namespace map
+  // 获取 namespace，root 没有 namespace
   if (module.namespaced) {
     if (store._modulesNamespaceMap[namespace] && process.env.NODE_ENV !== 'production') {
       console.error(`[vuex] duplicate namespace ${namespace} for the namespaced module ${path.join('/')}`)
@@ -506,6 +507,7 @@ function unifyObjectStyle (type, payload, options) {
   return { type, payload, options }
 }
 
+// 初始化Vuex并只注册一次
 export function install (_Vue) {
   if (Vue && _Vue === Vue) {
     if (process.env.NODE_ENV !== 'production') {
@@ -516,5 +518,6 @@ export function install (_Vue) {
     return
   }
   Vue = _Vue
+  // Vue 2.0 以上会混入 beforeCreate 函数
   applyMixin(Vue)
 }
